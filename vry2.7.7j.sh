@@ -5599,7 +5599,7 @@ menu() {
     showInstallStatus
     echoContent red "\n=============================================================="
     echoContent red "                     囧修改  Xray                    "
-    echoContent green "2.Trojan+TLS+gRPC[CDN] 替换为 2.VMess+TLS+TCP  port:31298"
+    echoContent green "2.Trojan+TLS+gRPC[CDN] 替换为 2.VMess+TLS+TCP"
     echoContent red "=============================================================="
     if [[ -n "${coreInstallType}" ]]; then
         echoContent yellow "1.重新安装"
