@@ -4,45 +4,7 @@
 # 检查系统
 export LANG=en_US.UTF-8
 
-<<jxiugai
-"                     囧修改  Xray                    "
-"2.Trojan+TLS+gRPC[CDN] 替换为 2.VMess+TLS+TCP"
-# 当前的个性化安装方式 01234
-    currentInstallProtocolType=
 
-04_VMess_TCP_inbounds.json
-
-# 初始化Xray 配置文件
-initXrayConfig() {
-    # VLESS_TCP_TLS/XTLS
-    # 回落nginx
-    # VLESS_WS_TLS
-    # VMess_TCP          
-# 初始化V2Ray 配置文件
-initV2RayConfig() {
-
-# 读取协议类型
-321
-        if echo "${row}" | grep -q VMess_TCP_inbounds; then
-            currentInstallProtocolType=${currentInstallProtocolType}'2'
-        fi
-
-551
-        if echo ${currentInstallProtocolType} | grep -q 2; then
-            echoContent yellow "VMess+TCP[TLS] \c"
-        fi
-
-# 账号
-3419
-    if echo ${currentInstallProtocolType} | grep -q 2; then
-        echoContent skyBlue "\n================================  VMess TCP TLS   ================================\n"
-
-
-    # 生成用户
-        if echo ${currentInstallProtocolType} | grep -q 2; then
-		local vmessUsers="${users//\"flow\":\""xtls-rprx-vision\"\,/}"
-
-jxiugai
 
 echoContent() {
     case $1 in
