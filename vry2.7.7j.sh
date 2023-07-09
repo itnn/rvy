@@ -4,6 +4,46 @@
 # 检查系统
 export LANG=en_US.UTF-8
 
+<<jxiugai
+"                     囧修改  Xray                    "
+"2.Trojan+TLS+gRPC[CDN] 替换为 2.VMess+TLS+TCP"
+# 当前的个性化安装方式 01234
+    currentInstallProtocolType=
+
+04_VMess_TCP_inbounds.json
+
+# 初始化Xray 配置文件
+initXrayConfig() {
+    # VLESS_TCP_TLS/XTLS
+    # 回落nginx
+    # VLESS_WS_TLS
+    # VMess_TCP          
+# 初始化V2Ray 配置文件
+initV2RayConfig() {
+
+# 读取协议类型
+321
+        if echo "${row}" | grep -q VMess_TCP_inbounds; then
+            currentInstallProtocolType=${currentInstallProtocolType}'2'
+        fi
+
+551
+        if echo ${currentInstallProtocolType} | grep -q 2; then
+            echoContent yellow "VMess+TCP[TLS] \c"
+        fi
+
+# 账号
+3419
+    if echo ${currentInstallProtocolType} | grep -q 2; then
+        echoContent skyBlue "\n================================  VMess TCP TLS   ================================\n"
+
+
+    # 生成用户
+        if echo ${currentInstallProtocolType} | grep -q 2; then
+		local vmessUsers="${users//\"flow\":\""xtls-rprx-vision\"\,/}"
+
+jxiugai
+
 echoContent() {
     case $1 in
     # 红色
@@ -309,7 +349,7 @@ readInstallProtocolType() {
         if echo "${row}" | grep -q VLESS_WS_inbounds; then
             currentInstallProtocolType=${currentInstallProtocolType}'1'
         fi
-        if echo "${row}" | grep -q trojan_gRPC_inbounds; then
+        if echo "${row}" | grep -q VMess_TCP_inbounds; then
             currentInstallProtocolType=${currentInstallProtocolType}'2'
         fi
         if echo "${row}" | grep -q VMess_WS_inbounds; then
@@ -540,7 +580,7 @@ showInstallStatus() {
         fi
 
         if echo ${currentInstallProtocolType} | grep -q 2; then
-            echoContent yellow "Trojan+gRPC[TLS] \c"
+            echoContent yellow "VMess+TCP[TLS] \c"
         fi
 
         if echo ${currentInstallProtocolType} | grep -q 3; then
@@ -2943,7 +2983,7 @@ EOF
         addClients "/etc/v2ray-agent/xray/conf/03_VLESS_WS_inbounds.json" "${addClientsStatus}"
     fi
 
-    # VMess_TCP
+    # VMess_TCP 囧
     if [[ -n $(echo ${selectCustomInstallType} | grep 2) || "$1" == "all" ]]; then
         fallbacksList=${fallbacksList}',{"path":"/'${customPath}'tcp","dest":31298,"xver":1}'
         getClients "${configPath}../tmp/04_VMess_TCP_inbounds.json" "${addClientsStatus}"
@@ -3406,11 +3446,10 @@ showAccounts() {
             defaultBase64Code trojan "${email}" "$(echo "${user}" | jq -r .password)"
         done
     fi
-
+# 04_trojan_gRPC_inbounds.json
     if echo ${currentInstallProtocolType} | grep -q 2; then
-        echoContent skyBlue "\n================================  Trojan gRPC TLS  ================================\n"
-        echoContent red "\n --->gRPC处于测试阶段，可能对你使用的客户端不兼容，如不能使用请忽略"
-        jq .inbounds[0].settings.clients ${configPath}04_trojan_gRPC_inbounds.json | jq -c '.[]' | while read -r user; do
+        echoContent skyBlue "\n================================  VMess TCP TLS   ================================\n"
+        jq .inbounds[0].settings.clients ${configPath}04_VMess_TCP_inbounds.json | jq -c '.[]' | while read -r user; do
             local email=
             email=$(echo "${user}" | jq -r .email)
 
@@ -3951,15 +3990,13 @@ addUser() {
         fi
 
         if echo ${currentInstallProtocolType} | grep -q 2; then
-            local trojangRPCUsers="${users//\"flow\":\"xtls-rprx-vision\"\,/}"
-            trojangRPCUsers="${trojangRPCUsers//${email}/${email}_Trojan_gRPC}"
-            trojangRPCUsers="${trojangRPCUsers//\,\"alterId\":0/}"
-            trojangRPCUsers=${trojangRPCUsers//"id"/"password"}
-
-            local trojangRPCResult
-            trojangRPCResult=$(jq -r ".inbounds[0].settings.clients += [${trojangRPCUsers}]" ${configPath}04_trojan_gRPC_inbounds.json)
-            echo "${trojangRPCResult}" | jq . >${configPath}04_trojan_gRPC_inbounds.json
-        fi
+            local vmessUsers="${users//\,\"alterId\":0/}"
+            vmessUsers="${vlessUsers//${email}/${email}_VMess_TCP}"
+		local vmessUsers="${users//\"flow\":\""xtls-rprx-vision\"\,/}"
+		local vmessTcpResult
+		vmessTcpResult=$(jq -r '.inbounds[0].settings.clients += ['${vmessUsers}']' ${configPath}04_VMess_TCP_inbounds.json)
+		echo "${vmessTcpResult}" | jq . >${configPath}04_VMess_TCP_inbounds.json
+	fi
 
         if echo ${currentInstallProtocolType} | grep -q 3; then
             local vmessUsers="${users//\"flow\":\"xtls-rprx-vision\"\,/}"
@@ -4023,11 +4060,11 @@ removeUser() {
             echo "${vlessWSResult}" | jq . >${configPath}03_VLESS_WS_inbounds.json
         fi
 
-        if echo ${currentInstallProtocolType} | grep -q 2; then
-            local trojangRPCUsers
-            trojangRPCUsers=$(jq -r 'del(.inbounds[0].settings.clients['${delUserIndex}'])' ${configPath}04_trojan_gRPC_inbounds.json)
-            echo "${trojangRPCUsers}" | jq . >${configPath}04_trojan_gRPC_inbounds.json
-        fi
+		if echo ${currentInstallProtocolType} | grep -q 2; then
+			local vmessTCPResult
+			vmessTCPResult=$(jq -r 'del(.inbounds[0].settings.clients['${delUserIndex}'])' ${configPath}04_VMess_TCP_inbounds.json)
+			echo "${vmessTCPResult}" | jq . >${configPath}04_VMess_TCP_inbounds.json
+		fi
 
         if echo ${currentInstallProtocolType} | grep -q 3; then
             local vmessWSResult
